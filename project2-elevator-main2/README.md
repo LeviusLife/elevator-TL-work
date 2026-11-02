@@ -187,6 +187,12 @@ Each member records their contributions here.
 | 2026-10-29 | Fixed memory issue. Initially, memory   |
 | 2026-10-31 | Testing finalized. Project pushed to secondary repository, just in case |
 
+**Use of AI**
+-Used ChatGPT in order to help guide me through making the elevator_main.c file. I needed the
+most help with the scheduling algorithm and also trying to write and understand code related to mutex.
+There were some memory allocation issues that I also used to AI to help resolve. After those things were done,
+I read each line so that I could understand and scrutinize everything that ChatGPT helped me with.
+
 
 ## Meetings
 Document in-person meetings, their purpose, and what was discussed.
