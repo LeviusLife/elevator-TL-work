@@ -10,6 +10,8 @@
 #include <linux/errno.h>
 #include <linux/compiler.h>
 #include "pet_list.h"
+#include <linux/slab.h>
+
 
 extern int (*STUB_start_elevator)(void);
 extern int (*STUB_issue_request)(int, int, int);
@@ -166,23 +168,42 @@ static int elevator_stop(void)
 
 static int elevator_show(struct seq_file *m, void *v)
 {
-    char pets[10000];
+    char *pets;
     int floor;
+
+     pets = kmalloc(10000, GFP_KERNEL);
+
+	if(!pets)
+	  return -ENOMEM;
+
     mutex_lock(&elevator_lock);
-    seq_printf(m, "Elevator state: %s\nCurrent floor: %d\nCurrent load: %d lbs\n",
+
+    seq_printf(m, "Elevator state: %s\n" 
+		"Current floor: %d\n"
+"		Current load: %d lbs\n",
                state_names[state], current_floor, building.load);
-    print_elevator(&building, pets, sizeof(pets));
+
+    print_elevator(&building, pets, 10000);
+
     seq_printf(m, "Elevator status:%s\n", pets);
+
     for (floor = NUM_FLOORS; floor >= 1; floor--) {
-        print_floor(&building, floor, pets, sizeof(pets));
-        seq_printf(m, "[%c] Floor %d: %d%s\n",
-                   current_floor == floor ? '*' : ' ', floor,
+        print_floor(&building, floor, pets, 10000);
+        
+	seq_printf(m, "[%c] Floor %d: %d%s\n",
+                   current_floor == floor ? '*' : ' ', 
+		   floor,
                    floor_count(&building, floor), pets);
     }
+
     seq_printf(m, "Number of pets: %d\nNumber of pets waiting: %d\n"
                "Number of pets serviced: %d\n", building.num_waiting,
                building.num_waiting, building.num_serviced);
+
     mutex_unlock(&elevator_lock);
+
+    kfree(pets);
+
     return 0;
 }
 
