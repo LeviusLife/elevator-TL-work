@@ -4,7 +4,7 @@ elevator-y := src/elevator_main.o src/pet_list.o
 
 else
 
-KDIR ?= /lib/modules/$(shell uname -r)/builld
+KDIR ?= /usr/src/linux-6.16.12
 PWD := $(shell pwd)
 
 all:
